@@ -43,8 +43,36 @@ if [ "" == "$NGINX_INSTALLED" ]
 then
    echo Installing nginx...
    apt-get install nginx
-   nginx -s stop
-   nginx -c /data/nginx/nginx.conf
 else
    echo "nginx installed"
 fi
+
+echo Restarting nginx with appropriate config
+
+nginx -s stop
+nginx -c /data/nginx/nginx.conf
+
+# PHP5_FPM
+
+PHP5_FPM_INSTALLED=$(IsPackageInstalled "php5-fpm")
+
+if [ "" == "$PHP5_FPM_INSTALLED" ]
+then
+   echo Installing php5-fpm
+   apt-get install php5-fpm
+else
+   echo "php5-fpm installed"
+fi
+
+echo Restarting PHP5-FPM
+
+sudo service php5-fpm restart
+
+# Add the nginx user to the www-data group. This is necessary to set the
+# correct permissions on the /var/run/php5-fpm.sock file (which is how
+# nginx communicates with php
+
+echo Connecting nginx and PHP
+
+sudo usermod -aG www-data nginx
+
