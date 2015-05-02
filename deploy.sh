@@ -4,11 +4,11 @@ function IsPackageInstalled()
 {
    PKG_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' $1 | grep "install ok installed")
 
-   if [ "" == "$PKG_INSTALLED" ]
+   if [ "install ok installed" == "$PKG_INSTALLED" ]
    then
-      return 0 
+      echo "true"
    else
-      return 1
+      echo "false"
    fi
 }
 
@@ -21,7 +21,7 @@ cd data
 
 GIT_INSTALLED=$(IsPackageInstalled "git")
 
-if [ "" == "$GIT_INSTALLED" ]
+if [ "$GIT_INSTALLED" == "false" ]
 then
    echo Installing git...
    apt-get install git 
@@ -39,7 +39,7 @@ echo Verifying nginx install...
 
 NGINX_INSTALLED=$(IsPackageInstalled "nginx")
 
-if [ "" == "$NGINX_INSTALLED" ]
+if [ "$NGINX_INSTALLED" == "false" ]
 then
    echo Installing nginx...
    apt-get install nginx
@@ -56,7 +56,7 @@ nginx -c /data/nginx/nginx.conf
 
 PHP5_FPM_INSTALLED=$(IsPackageInstalled "php5-fpm")
 
-if [ "" == "$PHP5_FPM_INSTALLED" ]
+if [ "$PHP5_FPM_INSTALLED" == "false" ]
 then
    echo Installing php5-fpm
    apt-get install php5-fpm
